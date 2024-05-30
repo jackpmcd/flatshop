@@ -36,11 +36,12 @@ def list_add(message):
     _, *food_items = message.text.split()
 
     if food_items:
-        list_name = ' '.join(list_name)
-        add_to_keep(list_name)
+        food_list = food_items.split(',')
+        for food_item in food_list:
+            add_to_keep(food_item)
         bot.set_message_reaction(message.chat.id, message.id, [telebot.types.ReactionTypeEmoji("👍")])
     else:
-        bot.reply_to(message, "Please provide a list name")
+        bot.reply_to(message, "Please provide a list of food items")
 
 @bot.message_handler(commands=['showlist'])
 def show_list(message):

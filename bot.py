@@ -22,23 +22,23 @@ print("Bot is running...")
 
 @bot.message_handler(commands=['addfood'])
 def food_add(message):
-    _, *food_item = message.text.split()
+    _, *item = message.text.split()
 
-    if food_item:
-        food_item = ' '.join(food_item)
-        add_to_keep(food_item)
+    if item:
+        item = ' '.join(item)
+        add_to_keep(item)
         bot.set_message_reaction(message.chat.id, message.id, [telebot.types.ReactionTypeEmoji("👍")])
     else:
         bot.reply_to(message, "Please provide a food item to add")
 
 @bot.message_handler(commands=['addlist'])
 def list_add(message):
-    _, *food_items = message.text.split()
+    _, *items = message.text.split()
 
-    if food_items:
-        food_list = food_items.split(',')
-        for food_item in food_list:
-            add_to_keep(food_item)
+    if items:
+        item_list = items.split(',')
+        for item in item_list:
+            add_to_keep(item)
         bot.set_message_reaction(message.chat.id, message.id, [telebot.types.ReactionTypeEmoji("👍")])
     else:
         bot.reply_to(message, "Please provide a list of food items")
@@ -49,9 +49,9 @@ def show_list(message):
     items = [item.text for item in shopping_list.unchecked]
     bot.reply_to(message, '\n'.join(items))
 
-def add_to_keep(food_item):
-    shopping_list.add(food_item, False)
-    print("added to keep: ", food_item)
+def add_to_keep(item):
+    shopping_list.add(item, False)
+    print("added to keep: ", item)
     keep.sync()
 
 bot.infinity_polling()

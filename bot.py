@@ -36,8 +36,8 @@ def list_add(message):
     _, *items = message.text.split()
 
     if items:
-        print(items)
-        for item in items:
+        split_items = ' '.join(items).split(', ')
+        for item in split_items:
             add_to_keep(item)
         bot.set_message_reaction(message.chat.id, message.id, [telebot.types.ReactionTypeEmoji("👍")])
     else:

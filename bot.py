@@ -47,6 +47,8 @@ def list_add(message):
 def show_list(message):
     print("Here is what is in your shopping list: ")
     items = [item.text for item in shopping_list.unchecked]
+    if not items:
+        bot.reply_to(message, "Your shopping list is empty")
     bot.reply_to(message, '\n'.join(items))
 
 def add_to_keep(item):

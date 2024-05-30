@@ -45,6 +45,7 @@ def list_add(message):
 
 @bot.message_handler(commands=['showlist'])
 def show_list(message):
+    keep.sync()
     print("Here is what is in your shopping list: ")
     items = [item.text for item in shopping_list.unchecked]
     if len(items) == 0:

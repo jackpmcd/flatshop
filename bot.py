@@ -52,7 +52,7 @@ def list_add(message):
 
 @bot.message_handler(commands=['showlist'])
 def show_list(message):
-    if message.chat.id == chat_id: 
+    if str(message.chat.id) == str(chat_id): 
         keep.sync()
         items = [item.text for item in shopping_list.unchecked]
         if len(items) == 0:

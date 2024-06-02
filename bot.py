@@ -23,7 +23,7 @@ print("Bot is running...")
 
 @bot.message_handler(commands=['add'])
 def item_add(message):
-    if message.chat.id == chat_id: 
+    if message.chat.id == int(chat_id): 
         _, *item = message.text.split()
 
         if item:
@@ -37,7 +37,7 @@ def item_add(message):
 
 @bot.message_handler(commands=['addlist'])
 def list_add(message):
-    if message.chat.id == chat_id: 
+    if message.chat.id == int(chat_id): 
         _, *items = message.text.split()
 
         if items:
@@ -53,7 +53,7 @@ def list_add(message):
 @bot.message_handler(commands=['showlist'])
 def show_list(message):
     print(message.chat.id, chat_id)
-    if str(message.chat.id) == str(chat_id): 
+    if message.chat.id == int(chat_id): 
         keep.sync()
         items = [item.text for item in shopping_list.unchecked]
         if len(items) == 0:

@@ -1,6 +1,7 @@
 import os
 import telebot
 import gkeepapi
+from scraper import *
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -63,9 +64,24 @@ def show_list(message):
     else:
         bot.reply_to(message, "You're in the wrong place buddy.")
 
+@bot.message_handler(commands=['addurl'])
+def add_url(message):
+    if message.chat.id == int(chat_id): 
+        keep.sync()
+        _, *url = message.text.split()
+        items = [item.text for item in shopping_list.unchecked]
+        if url:
+            url = ' '.join(url)
+            ingredients = extract_nouns(url, items)
+            # for ingredient in ingredients:
+            #     if ingredient not in items:
+            add_to_keep(ingredients)
+            bot.set_message_reaction(message.chat.id, message.id, [telebot.types.ReactionTypeEmoji("👍")])
+        else:
+            bot.reply_to(message, "Please provide a URL")
+
 def add_to_keep(item):
     shopping_list.add(item, False)
-    print("added to keep: ", item)
     keep.sync()
 
 bot.infinity_polling()

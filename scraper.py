@@ -26,6 +26,6 @@ def extract_nouns(url, items):
         results = element.find_all("li")
         for result in results:
             ingredients.append(result.text)
-    prompt = f"Extract only the nouns from the following ingredient list, :\n{ingredients} if any are similar to the ones in this list please match the exist wording: \n{items} \nNouns:"
+    prompt = f"Extract only the nouns from the following ingredient list, :\n{ingredients} if any are similar to the ones in this list please match the exist wording: \n{items} Don't include an introduction \nNouns:"
     response = ollama.generate(model='llama3', prompt=prompt)
     return response['response']

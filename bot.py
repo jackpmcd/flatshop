@@ -4,7 +4,7 @@ import gkeepapi
 from scraper import *
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 gmail = os.getenv('GMAIL')
 master_token = os.getenv('MASTER_TOKEN')
@@ -69,19 +69,42 @@ def add_url(message):
     if message.chat.id == int(chat_id): 
         keep.sync()
         _, *url = message.text.split()
-        items = [item.text for item in shopping_list.unchecked]
+        items = [re.sub(r' x\d+$', '', item.text).strip() for item in shopping_list.unchecked]
         if url:
             url = ' '.join(url)
             ingredients = extract_nouns(url, items)
-            # for ingredient in ingredients:
-            #     if ingredient not in items:
-            add_to_keep(ingredients)
+            if ingredients == "broken":
+                bot.reply_to(message, "Can't find the ingredients on this one - sorry!")
+                return
+            for ingredient in ingredients.split("\n"):
+                ingredient = re.sub(r'^[^a-zA-Z]+', '', ingredient)
+                ingredient = re.sub(r'[^a-zA-Z]+$', '', ingredient)
+                add_to_keep(ingredient)
             bot.set_message_reaction(message.chat.id, message.id, [telebot.types.ReactionTypeEmoji("👍")])
         else:
             bot.reply_to(message, "Please provide a URL")
 
-def add_to_keep(item):
-    shopping_list.add(item, False)
+def get_num_from_end(item):
+    match = re.search(r'(\d+)$',item)
+    if match:
+        return int(match.group(1))
+    else:
+        return 1
+    
+def add_to_keep(new_item):
+    keep.sync()
+    stripped_items = [re.sub(r' x\d+$', '', item.text).strip() for item in shopping_list.unchecked]
+    items = [item.text for item in shopping_list.unchecked]
+    if len(items) == 0:
+        shopping_list.add(new_item, False)
+    elif new_item in stripped_items:
+        item_index = stripped_items.index(new_item)
+        old_item = shopping_list.unchecked[item_index]
+        counter = get_num_from_end(old_item.text)
+        old_item.text = stripped_items[item_index] + " x" + str(counter + 1)
+    else:
+        shopping_list.add(new_item, False)
     keep.sync()
 
 bot.infinity_polling()
+
